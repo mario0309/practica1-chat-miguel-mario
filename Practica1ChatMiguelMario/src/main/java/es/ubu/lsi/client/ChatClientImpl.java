@@ -37,6 +37,7 @@ public class ChatClientImpl implements ChatClient {
 	/** Id. */
 	private int id;
 
+	private Set<String> bannedUsers = new HashSet<String>();
 	/**
 	 * Constructor.
 	 * 
@@ -217,16 +218,32 @@ public class ChatClientImpl implements ChatClient {
 				if (userMsg.equalsIgnoreCase(MessageType.LOGOUT.toString())) {
 					client.sendMessage(new ChatMessage(clientChat.id, MessageType.LOGOUT,
 							MessageType.LOGOUT.toString()));
-					// break to do the disconnect
 					break;
-					
+
 				} else if (userMsg.equalsIgnoreCase(MessageType.SHUTDOWN.toString())) {
 					client.sendMessage(new ChatMessage(clientChat.id, MessageType.SHUTDOWN,
 							MessageType.SHUTDOWN.toString()));
-					// break to do the disconnect
 					break;
-				
-				} else { // default to ordinary message
+
+				} else if (userMsg.toLowerCase().startsWith("ban ")) {
+					String bannedUser = userMsg.substring(4).trim();
+					if (!bannedUser.isEmpty()) {
+						clientChat.bannedUsers.add(bannedUser.toLowerCase());
+						client.sendMessage(new ChatMessage(clientChat.id, MessageType.MESSAGE, "BAN " + bannedUser));
+					} else {
+						System.out.println("Use: ban <username>");
+					}
+
+				} else if (userMsg.toLowerCase().startsWith("unban ")) {
+					String unbannedUser = userMsg.substring(6).trim();
+					if (!unbannedUser.isEmpty()) {
+						clientChat.bannedUsers.remove(unbannedUser.toLowerCase());
+						client.sendMessage(new ChatMessage(clientChat.id, MessageType.MESSAGE, "UNBAN " + unbannedUser));
+					} else {
+						System.out.println("Use: unban <username>");
+					}
+
+				} else {
 					client.sendMessage(new ChatMessage(clientChat.id, MessageType.MESSAGE, userMsg));
 				}
 				System.out.println();
@@ -250,9 +267,25 @@ public class ChatClientImpl implements ChatClient {
 				try {
 					ChatMessage msg = (ChatMessage) sInput.readObject();
 					if (msg.getId() != id) {
-						// if console mode print the message and add back the prompt
-						System.out.println(msg.getMessage());
-						System.out.print("\n> ");
+						String text = msg.getMessage();
+
+						boolean showMessage = true;
+
+						int firstSpace = text.indexOf(' ');
+						if (firstSpace >= 0 && firstSpace + 1 < text.length()) {
+							int colonIndex = text.indexOf(':', firstSpace + 1);
+							if (colonIndex > firstSpace) {
+								String possibleUser = text.substring(firstSpace + 1, colonIndex).trim();
+								if (bannedUsers.contains(possibleUser.toLowerCase())) {
+									showMessage = false;
+								}
+							}
+						}
+						
+						if (showMessage) {
+							System.out.println(text);
+							System.out.print("\n> ");
+						}
 					}
 						
 				} catch (IOException e) {
