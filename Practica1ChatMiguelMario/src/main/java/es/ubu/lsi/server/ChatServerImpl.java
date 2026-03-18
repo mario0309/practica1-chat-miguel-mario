@@ -140,7 +140,7 @@ public class ChatServerImpl implements ChatServer {
 		
 		// display message on console
 		System.out.print(messageLf);
-		
+		System.out.println("Mario Carcedo y Miguel Cuevas patrocinan el mensaje: " + messageLf.trim());
 		// we loop in reverse order in case we would have to remove a Client
 		// because it has disconnected
 		for (int i = clients.size(); --i >= 0;) {
@@ -285,9 +285,20 @@ public class ChatServerImpl implements ChatServer {
 					alive = false;					
 					break;
 				case MESSAGE:
-					chatMessage.setMessage(username + ": " + chatMessage.getMessage());
-					broadcast(chatMessage);
-					break;
+				    String text = chatMessage.getMessage();
+
+				    if (text.toUpperCase().startsWith("BAN ")) {
+				        String bannedUser = text.substring(4).trim();
+				        chatMessage.setMessage(username + " ha baneado a " + bannedUser);
+				    } else if (text.toUpperCase().startsWith("UNBAN ")) {
+				        String unbannedUser = text.substring(6).trim();
+				        chatMessage.setMessage(username + " ha desbaneado a " + unbannedUser);
+				    } else {
+				        chatMessage.setMessage(username + ": " + text);
+				    }
+
+				    broadcast(chatMessage);
+				    break;
 				case LOGOUT:
 					show(username + " disconnected with a LOGOUT message.");
 					chatMessage.setMessage(username + " leaving chat room!");
