@@ -12,7 +12,7 @@ import es.ubu.lsi.common.ChatMessage.MessageType;
  * Chat server. Based on code available at: 
  * http://www.dreamincode.net/forums/topic/259777-a-simple-chat-program-with-clientserver-gui-optional/
  * 
- * Modified by Raúl Marticorena & Joaquín P- Seco
+ * Modified by Raúl Marticorena y Joaquín P- Seco
  * 
  * @author http://www.dreamincode.net
  * @author Raúl Marticorena

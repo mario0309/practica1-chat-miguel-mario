@@ -36,7 +36,7 @@ public class ChatClientImpl implements ChatClient {
 
 	/** Id. */
 	private int id;
-
+	/** Usuarios bloqueados para el filtrado local de mensajes. */
 	private Set<String> bannedUsers = new HashSet<String>();
 	/**
 	 * Constructor.
@@ -254,13 +254,14 @@ public class ChatClientImpl implements ChatClient {
 	}
 
 	/**
-	 * Client listener for messages from server.
-	 * 
+	 * Listener interno que recibe mensajes del servidor y los muestra
+	 * en la consola del cliente cuando no están bloqueados.
 	 */
 	class ChatClientListener implements Runnable {
 		
 		/**
-		 * Run.
+		 * Recibe mensajes del servidor y los muestra si el remitente
+		 * no está bloqueado por este cliente.
 		 */
 		public void run() {
 			while (true) {

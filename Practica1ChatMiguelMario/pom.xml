@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>es.ubu.lsi</groupId>
-  <artifactId>Practica1Chat</artifactId>
+  <artifactId>Practica1ChatMiguelMario</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>Practica1Chat</name>
+  <name>Practica1ChatMiguelMario</name>
   <url>http://maven.apache.org</url>
 
   <properties>
